@@ -6,6 +6,7 @@ import net.snofox.navi.config.VoiceLogConfig;
 import sx.blah.discord.Discord4J;
 import sx.blah.discord.api.ClientBuilder;
 import sx.blah.discord.api.IDiscordClient;
+import sx.blah.discord.modules.Configuration;
 
 import java.io.File;
 /*
@@ -21,14 +22,17 @@ public class Navi {
     private static ObjectMapper mapper = new ObjectMapper();
     public static void main(String[] args) {
         if(args.length != 1) {
-            System.out.println("Config directory");
+            System.out.println("Config directory?");
             return;
         }
         configPath = args[0];
         coreConfig = (CoreConfig)initConfig(CoreConfig.class);
         if(coreConfig == null) System.exit(1);
 
+        // Configure Discord4J
         ((Discord4J.Discord4JLogger)Discord4J.LOGGER).setLevel(Discord4J.Discord4JLogger.Level.DEBUG);
+        Configuration.LOAD_EXTERNAL_MODULES = false;
+        Configuration.AUTOMATICALLY_ENABLE_MODULES = false;
         IDiscordClient discordClient = new ClientBuilder().withToken(coreConfig.getApiToken()).build();
         discordClient.getDispatcher().registerListener(new VoiceLog(initConfig(VoiceLogConfig.class)));
         discordClient.login();
