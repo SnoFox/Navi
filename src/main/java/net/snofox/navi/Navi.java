@@ -3,6 +3,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import net.snofox.navi.config.CoreConfig;
 import net.snofox.navi.config.IConfig;
 import net.snofox.navi.config.VoiceLogConfig;
+import net.snofox.navi.module.Playlist;
+import net.snofox.navi.module.TestEvents;
+import net.snofox.navi.module.VoiceLog;
 import sx.blah.discord.Discord4J;
 import sx.blah.discord.api.ClientBuilder;
 import sx.blah.discord.api.IDiscordClient;
@@ -17,9 +20,11 @@ Hello!
 Look!
  */
 public class Navi {
+    private static Navi instance;
     private static CoreConfig coreConfig;
     private static String configPath;
     private static ObjectMapper mapper = new ObjectMapper();
+    private IDiscordClient discordClient;
     public static void main(String[] args) {
         if(args.length != 1) {
             System.out.println("Config directory?");
@@ -29,13 +34,7 @@ public class Navi {
         coreConfig = (CoreConfig)initConfig(CoreConfig.class);
         if(coreConfig == null) System.exit(1);
 
-        // Configure Discord4J
-        ((Discord4J.Discord4JLogger)Discord4J.LOGGER).setLevel(Discord4J.Discord4JLogger.Level.DEBUG);
-        Configuration.LOAD_EXTERNAL_MODULES = false;
-        Configuration.AUTOMATICALLY_ENABLE_MODULES = false;
-        IDiscordClient discordClient = new ClientBuilder().withToken(coreConfig.getApiToken()).build();
-        discordClient.getDispatcher().registerListener(new VoiceLog(initConfig(VoiceLogConfig.class)));
-        discordClient.login();
+        instance = new Navi();
     }
 
     private static File getConfigFile(final String configName) {
@@ -75,5 +74,22 @@ public class Navi {
         } catch (Exception e) {
             Discord4J.LOGGER.error("Failed to save configuration file: " + e.getClass().getSimpleName() + ": " + e.getMessage());
         }
+    }
+
+    public static IDiscordClient getDiscordClient() {
+        return instance.discordClient;
+    }
+
+    Navi() {
+        // Configure Discord4J
+        ((Discord4J.Discord4JLogger)Discord4J.LOGGER).setLevel(Discord4J.Discord4JLogger.Level.DEBUG);
+        Configuration.LOAD_EXTERNAL_MODULES = false;
+        Configuration.AUTOMATICALLY_ENABLE_MODULES = false;
+        this.discordClient = new ClientBuilder().withToken(coreConfig.getApiToken()).build();
+        // load me some modules
+        discordClient.getDispatcher().registerListener(new VoiceLog(initConfig(VoiceLogConfig.class)));
+        discordClient.getDispatcher().registerListener(new Playlist());
+        discordClient.getDispatcher().registerListener(new TestEvents());
+        discordClient.login();
     }
 }
