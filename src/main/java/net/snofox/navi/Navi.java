@@ -3,7 +3,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import net.snofox.navi.config.CoreConfig;
 import net.snofox.navi.config.IConfig;
 import net.snofox.navi.config.VoiceLogConfig;
-import net.snofox.navi.module.Playlist;
+import net.snofox.navi.module.command.CommandHandler;
+import net.snofox.navi.module.playlist.Playlist;
 import net.snofox.navi.module.TestEvents;
 import net.snofox.navi.module.VoiceLog;
 import sx.blah.discord.Discord4J;
@@ -80,6 +81,10 @@ public class Navi {
         return instance.discordClient;
     }
 
+    public static CoreConfig getCoreConfig() {
+        return coreConfig;
+    }
+
     Navi() {
         // Configure Discord4J
         ((Discord4J.Discord4JLogger)Discord4J.LOGGER).setLevel(Discord4J.Discord4JLogger.Level.DEBUG);
@@ -87,6 +92,7 @@ public class Navi {
         Configuration.AUTOMATICALLY_ENABLE_MODULES = false;
         this.discordClient = new ClientBuilder().withToken(coreConfig.getApiToken()).build();
         // load me some modules
+        discordClient.getDispatcher().registerListener(new CommandHandler());
         discordClient.getDispatcher().registerListener(new VoiceLog(initConfig(VoiceLogConfig.class)));
         discordClient.getDispatcher().registerListener(new Playlist());
         discordClient.getDispatcher().registerListener(new TestEvents());

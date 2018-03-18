@@ -9,6 +9,7 @@ public class LavaAudioProviderImpl implements IAudioProvider {
     private final AudioPlayer player;
     private AudioFrame frame;
     private int underflows = 0;
+    private int calls = 0;
     public LavaAudioProviderImpl(final AudioPlayer player) {
         this.player = player;
     }
@@ -21,6 +22,7 @@ public class LavaAudioProviderImpl implements IAudioProvider {
 
     @Override
     public byte[] provide() {
+        ++calls;
         if(!isReady()) {
             ++underflows;
             return null;
@@ -46,5 +48,13 @@ public class LavaAudioProviderImpl implements IAudioProvider {
 
     public void resetUnderflows() {
         underflows = 0;
+    }
+
+    public int getCalls() {
+        return calls;
+    }
+
+    public void resetCalls() {
+        calls = 0;
     }
 }
