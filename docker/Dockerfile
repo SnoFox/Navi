@@ -9,10 +9,10 @@ ARG branch=master
 RUN wget -O navi.zip https://github.com/SnoFox/Navi/archive/${branch}.zip \
     && unzip navi.zip \
     && cd Navi-${branch} \
-    && /build/maven/bin/mvn install \
-    && cp target/*.jar /root/navi.jar
+    && /build/maven/bin/mvn -Dmaven.repo.local=/build/m2/repository install \
+    && mv target/*-jar-with-dependencies.jar /opt/navi.jar \
+    && rm -rf /build
 WORKDIR /
-RUN rm -rf /build
 
 # config dir
 VOLUME /volumes/config
