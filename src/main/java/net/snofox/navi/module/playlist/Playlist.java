@@ -1,5 +1,7 @@
 package net.snofox.navi.module.playlist;
 
+import net.snofox.navi.config.IConfig;
+import net.snofox.navi.config.PlaylistConfig;
 import net.snofox.navi.module.command.CommandHandler;
 import net.snofox.navi.module.playlist.command.*;
 import sx.blah.discord.api.events.Event;
@@ -9,8 +11,10 @@ import sx.blah.discord.handle.obj.*;
 public class Playlist implements IListener {
     private final MusicManager musicManager;
 
-    public Playlist() {
+    public Playlist(IConfig config) {
+        if(!(config instanceof PlaylistConfig)) config = new PlaylistConfig();
         musicManager = new MusicManager();
+        musicManager.getPlayerManager().setFrameBufferDuration(((PlaylistConfig)config).getFrameBufferLengthMillis());
         registerCommands();
     }
 
