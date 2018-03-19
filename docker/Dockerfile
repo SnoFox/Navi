@@ -5,6 +5,7 @@ WORKDIR /build
 RUN wget -O maven.tar.gz http://www-us.apache.org/dist/maven/maven-3/3.5.3/binaries/apache-maven-3.5.3-bin.tar.gz \
     && tar -xf maven.tar.gz \
     && mv apache-maven-* maven
+RUN groupadd -g 99 navi && useradd -MNu 99 -g 99 -s /usr/sbin/nologin navi
 ARG branch=master
 RUN wget -O navi.zip https://github.com/SnoFox/Navi/archive/${branch}.zip \
     && unzip navi.zip \
