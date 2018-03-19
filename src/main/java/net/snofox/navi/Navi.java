@@ -2,6 +2,7 @@ package net.snofox.navi;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import net.snofox.navi.config.CoreConfig;
 import net.snofox.navi.config.IConfig;
+import net.snofox.navi.config.PlaylistConfig;
 import net.snofox.navi.config.VoiceLogConfig;
 import net.snofox.navi.module.command.CommandHandler;
 import net.snofox.navi.module.playlist.Playlist;
@@ -94,7 +95,7 @@ public class Navi {
         // load me some modules
         discordClient.getDispatcher().registerListener(new CommandHandler());
         discordClient.getDispatcher().registerListener(new VoiceLog(initConfig(VoiceLogConfig.class)));
-        discordClient.getDispatcher().registerListener(new Playlist());
+        discordClient.getDispatcher().registerListener(new Playlist(initConfig(PlaylistConfig.class)));
         discordClient.getDispatcher().registerListener(new TestEvents());
         discordClient.login();
     }

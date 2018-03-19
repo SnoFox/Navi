@@ -27,6 +27,7 @@ public class MusicManager {
     /* pkg-private */ MusicManager() {
         this.playerManager = new DefaultAudioPlayerManager();
         AudioSourceManagers.registerRemoteSources(playerManager);
+        playerManager.enableGcMonitoring();
         this.sessions = new HashMap<>();
         this.scheduler = new TrackScheduler();
         instance = this;

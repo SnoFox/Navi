@@ -20,8 +20,8 @@ public class MusicDebug implements ICommand {
         final IGuild guild = ev.getGuild();
         final IUser user = ev.getAuthor();
         final IChannel chan = ev.getChannel();
-        if(!user.getPermissionsForGuild(guild).contains(Permissions.ADMINISTRATOR)) {
-            chan.sendMessage("Look! You need the *Administrator* permission to do that!");
+        if(!user.getPermissionsForGuild(guild).contains(Permissions.MANAGE_SERVER)) {
+            chan.sendMessage("Look! You need the *Manage Server* permission to do that!");
             return;
         }
         PlaySession session = MusicManager.getInstance().getSession(guild);
@@ -29,6 +29,8 @@ public class MusicDebug implements ICommand {
         sb.append("Debug stats for " + guild.getName());
         sb.append("\n");
         for(int i = -16; i < guild.getName().length(); ++i) sb.append('-');
+        sb.append("\n**PlayerManager info**");
+        sb.append("\nFrame duration: " + MusicManager.getInstance().getPlayerManager().getFrameBufferDuration());
         sb.append("\n**Player stats**");
         final AudioPlayer player = session.getAudioDevice().getAudioPlayer();
         sb.append("\nPaused: " + player.isPaused());
