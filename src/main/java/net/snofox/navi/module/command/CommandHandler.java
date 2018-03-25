@@ -1,6 +1,7 @@
 package net.snofox.navi.module.command;
 
 import net.snofox.navi.Navi;
+import net.snofox.navi.module.NaviModule;
 import net.snofox.navi.util.MessageUtils;
 import org.slf4j.Logger;
 import sx.blah.discord.api.events.Event;
@@ -11,6 +12,8 @@ import sx.blah.discord.handle.obj.IChannel;
 import java.lang.reflect.Method;
 import java.util.*;
 
+
+@NaviModule(priority = NaviModule.Priority.HIGH)
 public class CommandHandler implements IListener {
     private static CommandHandler instance;
     private Logger logger;

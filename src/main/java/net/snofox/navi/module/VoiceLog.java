@@ -3,6 +3,7 @@ package net.snofox.navi.module;
 import net.snofox.navi.Navi;
 import net.snofox.navi.config.IConfig;
 import net.snofox.navi.config.VoiceLogConfig;
+import net.snofox.navi.module.command.CommandHandler;
 import net.snofox.navi.module.command.CommandRequires;
 import net.snofox.navi.module.command.ICommand;
 import sx.blah.discord.Discord4J;
@@ -17,6 +18,7 @@ import sx.blah.discord.handle.obj.*;
 
 import java.util.List;
 
+@NaviModule
 public class VoiceLog implements IListener {
     final private VoiceLogConfig config;
     public VoiceLog(final IConfig config) {
@@ -24,6 +26,7 @@ public class VoiceLog implements IListener {
             this.config = (VoiceLogConfig)config;
         else
             throw new IllegalArgumentException();
+        CommandHandler.registerCommand("voicelog", new VoiceLogCommand());
     }
 
     private void logToTextChat(UserVoiceChannelEvent ev) {

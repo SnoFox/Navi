@@ -2,12 +2,14 @@ package net.snofox.navi.module.playlist;
 
 import net.snofox.navi.config.IConfig;
 import net.snofox.navi.config.PlaylistConfig;
+import net.snofox.navi.module.NaviModule;
 import net.snofox.navi.module.command.CommandHandler;
 import net.snofox.navi.module.playlist.command.*;
 import sx.blah.discord.api.events.Event;
 import sx.blah.discord.api.events.IListener;
 import sx.blah.discord.handle.obj.*;
 
+@NaviModule
 public class Playlist implements IListener {
     private final MusicManager musicManager;
 
