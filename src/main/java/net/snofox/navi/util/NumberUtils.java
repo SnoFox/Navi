@@ -1,4 +1,4 @@
-package net.snofox.navi;
+package net.snofox.navi.util;
 
 public class NumberUtils {
     public static int clamp(int value, final int min, final int max) {

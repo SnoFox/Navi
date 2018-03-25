@@ -1,10 +1,16 @@
 package net.snofox.navi.module;
 
 import net.snofox.navi.module.command.CommandHandler;
+import net.snofox.navi.module.command.CommandRequires;
+import net.snofox.navi.module.command.ICommand;
 import sx.blah.discord.Discord4J;
 import sx.blah.discord.api.events.Event;
 import sx.blah.discord.api.events.EventSubscriber;
+import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedEvent;
 import sx.blah.discord.handle.obj.IVoiceChannel;
+import sx.blah.discord.handle.obj.Permissions;
+
+import java.util.List;
 
 public class TestEvents {
 

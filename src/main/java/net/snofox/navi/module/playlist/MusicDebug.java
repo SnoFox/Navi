@@ -3,27 +3,21 @@ package net.snofox.navi.module.playlist;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayer;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrackInfo;
+import net.snofox.navi.module.command.CommandRequires;
 import net.snofox.navi.module.command.ICommand;
 import net.snofox.navi.sound.LavaAudioProviderImpl;
 import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedEvent;
-import sx.blah.discord.handle.obj.IChannel;
 import sx.blah.discord.handle.obj.IGuild;
-import sx.blah.discord.handle.obj.IUser;
 import sx.blah.discord.handle.obj.Permissions;
 
 import java.util.LinkedList;
 import java.util.List;
 
+@CommandRequires(permission = Permissions.MANAGE_SERVER)
 public class MusicDebug implements ICommand {
     @Override
     public void run(MessageReceivedEvent ev, String command, List<String> args) {
         final IGuild guild = ev.getGuild();
-        final IUser user = ev.getAuthor();
-        final IChannel chan = ev.getChannel();
-        if(!user.getPermissionsForGuild(guild).contains(Permissions.MANAGE_SERVER)) {
-            chan.sendMessage("Look! You need the *Manage Server* permission to do that!");
-            return;
-        }
         PlaySession session = MusicManager.getInstance().getSession(guild);
         StringBuilder sb = new StringBuilder();
         sb.append("Debug stats for " + guild.getName());
@@ -53,7 +47,7 @@ public class MusicDebug implements ICommand {
         sb.append("\n**TrackScheduler stats**");
         final LinkedList<AudioTrack> queue = MusicManager.getInstance().getScheduler().getQueue(guild.getLongID());
         sb.append("\nQueue: " + queue.size() + " tracks");
-        if(queue.size() > 0) sb.append("\nNext song: " + queue.get(1).getInfo().title);
+        if(queue.size() > 0) sb.append("\nNext song: " + queue.get(0).getInfo().title);
         ev.getChannel().sendMessage(sb.toString());
     }
 }

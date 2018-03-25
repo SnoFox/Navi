@@ -8,25 +8,22 @@ import net.snofox.navi.module.command.CommandHandler;
 import net.snofox.navi.module.playlist.Playlist;
 import net.snofox.navi.module.TestEvents;
 import net.snofox.navi.module.VoiceLog;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import sx.blah.discord.Discord4J;
 import sx.blah.discord.api.ClientBuilder;
 import sx.blah.discord.api.IDiscordClient;
 import sx.blah.discord.modules.Configuration;
 
 import java.io.File;
-/*
-Hey!
-Listen!
-Watch Out!
-Hello!
-Look!
- */
+
 public class Navi {
     private static Navi instance;
     private static CoreConfig coreConfig;
     private static String configPath;
     private static ObjectMapper mapper = new ObjectMapper();
     private IDiscordClient discordClient;
+    private Logger logger;
     public static void main(String[] args) {
         if(args.length != 1) {
             System.out.println("Config directory?");
@@ -86,9 +83,21 @@ public class Navi {
         return coreConfig;
     }
 
+    public static Logger getLogger(final String loggerName) {
+        return LoggerFactory.getLogger(loggerName);
+    }
+
+    public static Logger getLogger(final Class clazz) {
+        return LoggerFactory.getLogger(clazz);
+    }
+
     Navi() {
+        System.setProperty("org.slf4j.simpleLogger.logFile", "System.out");
+        this.logger = getLogger(Navi.class);
+        logger.info("Listen! We're now logging!");
+        logger.info("Levels enabled: Trace? {} Debug? {} Error? {} Warn? {} Info? {}", logger.isTraceEnabled(), logger.isDebugEnabled(), logger.isErrorEnabled(), logger.isWarnEnabled(), logger.isInfoEnabled());
         // Configure Discord4J
-        ((Discord4J.Discord4JLogger)Discord4J.LOGGER).setLevel(Discord4J.Discord4JLogger.Level.DEBUG);
+        //((Discord4J.Discord4JLogger)Discord4J.LOGGER).setLevel(Discord4J.Discord4JLogger.Level.DEBUG);
         Configuration.LOAD_EXTERNAL_MODULES = false;
         Configuration.AUTOMATICALLY_ENABLE_MODULES = false;
         this.discordClient = new ClientBuilder().withToken(coreConfig.getApiToken()).build();
