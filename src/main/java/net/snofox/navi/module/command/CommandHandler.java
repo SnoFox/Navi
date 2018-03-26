@@ -64,6 +64,8 @@ public class CommandHandler implements IListener {
                 return CommandFailureReason.NOT_FAILED;
             if(!event.getChannel().getModifiedPermissions(event.getAuthor()).contains(requirements.permission()))
                 return CommandFailureReason.NO_PERMISSIONS;
+            if(requirements.guild_only() && event.getChannel().isPrivate())
+                return CommandFailureReason.REQUIRE_GUILD;
             if(requirements.voice() && event.getAuthor().getVoiceStateForGuild(event.getGuild()).getChannel() == null)
                 return CommandFailureReason.REQUIRE_VOICE;
         } catch (NoSuchMethodException e) {
@@ -102,6 +104,9 @@ public class CommandHandler implements IListener {
             case NOT_FOUND:
                 // should not react, return immediately
                 return;
+            case REQUIRE_GUILD:
+                sb.append("you can only use this in a server");
+                break;
             default:
                 logger.warn("Unhandled command failure: {}", reason.name());
                 sb.append("Something that was never supposed to happen... Happened.");

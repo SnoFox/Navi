@@ -6,5 +6,6 @@ enum CommandFailureReason {
     NO_PERMISSIONS,
     REQUIRE_VOICE,
     MISSING_ARGUMENTS,
+    REQUIRE_GUILD,
     NOT_FAILED
 }

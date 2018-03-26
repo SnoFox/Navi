@@ -9,4 +9,5 @@ import java.lang.annotation.RetentionPolicy;
 public @interface CommandRequires {
     Permissions permission() default Permissions.SEND_MESSAGES;
     boolean voice() default false;
+    boolean guild_only() default true;
 }

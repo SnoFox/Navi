@@ -43,7 +43,7 @@ public class MessageUtils {
         final StringBuilder sb = new StringBuilder(string.length());
         boolean uppercaseNext = true;
         for(final char c : string.toCharArray()) {
-            if (uppercaseNext) {
+            if(uppercaseNext) {
                 uppercaseNext = false;
                 sb.append(Character.toUpperCase(c));
                 continue;
@@ -52,5 +52,28 @@ public class MessageUtils {
             sb.append(Character.toLowerCase(c));
         }
         return sb.toString();
+    }
+
+    public static String progressBar(final long nominator, final long denominator) {
+        final int percent = Math.round(((float)nominator / (float)denominator * 100) / 10);
+        StringBuilder sb = new StringBuilder(12);
+        sb.append('[');
+        for(int x = 0; x < 10; ++x) {
+            if(x == percent)
+                sb.append('>');
+            else if(x > percent)
+                sb.append('-');
+            else
+                sb.append('=');
+        }
+        sb.append(']');
+        return sb.toString();
+    }
+
+    public static String tldr(final String string, final int length) {
+        if(string.length() > length)
+            return string.substring(0, length-4) + "... ";
+        else
+            return string;
     }
 }

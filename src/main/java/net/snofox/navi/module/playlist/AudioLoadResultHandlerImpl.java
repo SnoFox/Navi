@@ -6,6 +6,7 @@ import com.sedmelluq.discord.lavaplayer.track.AudioPlaylist;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrackInfo;
 import net.snofox.navi.Navi;
+import net.snofox.navi.util.NumberUtils;
 import sx.blah.discord.handle.obj.IChannel;
 import sx.blah.discord.handle.obj.IGuild;
 
@@ -38,7 +39,7 @@ public class AudioLoadResultHandlerImpl implements AudioLoadResultHandler {
         audioTrack.setUserData(meta);
         MusicManager.getInstance().queueSong(getGuild(), audioTrack);
         AudioTrackInfo info = audioTrack.getInfo();
-        getChannel().sendMessage("Queued up " + info.title + " (" + info.length + ")");
+        getChannel().sendMessage(String.format("Queued up %s (%s)", info.title, NumberUtils.millisToTimestamp(info.length)));
         turnOffTyping();
     }
 

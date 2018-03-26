@@ -6,6 +6,7 @@ import com.sedmelluq.discord.lavaplayer.tools.FriendlyException;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrackEndReason;
 import net.snofox.navi.Navi;
+import org.slf4j.Logger;
 import sx.blah.discord.Discord4J;
 
 import java.util.HashMap;
@@ -15,22 +16,25 @@ import java.util.NoSuchElementException;
 
 class TrackScheduler extends AudioEventAdapter {
     final private Map<Long, LinkedList<AudioTrack>> queues;
+    final private Logger logger;
 
     TrackScheduler() {
         queues = new HashMap<>();
+        logger = Navi.getLogger(this);
     }
 
     /*
     scheduler:
-    play / dequeue
-    pause
-    stop
-    skip
-    back
-    fast forward
-    rewind
-    queue
-    delete
+    [x] play / dequeue
+    [ ] pause
+    [ ] stop
+    [x] skip
+    [ ] back
+    [ ] seek back/forward
+    [x] queue
+    [ ] delete
+    [ ] shuffle
+    [ ] repeat? (A->B, playlist)
     */
 
     LinkedList<AudioTrack> getQueue(final long queueId) {

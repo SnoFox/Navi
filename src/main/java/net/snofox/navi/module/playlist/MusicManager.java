@@ -1,5 +1,6 @@
 package net.snofox.navi.module.playlist;
 
+import com.google.common.collect.ImmutableList;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayer;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayerManager;
 import com.sedmelluq.discord.lavaplayer.player.DefaultAudioPlayerManager;
@@ -9,7 +10,10 @@ import sx.blah.discord.handle.obj.IChannel;
 import sx.blah.discord.handle.obj.IGuild;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+
+import static com.google.common.collect.ImmutableList.of;
 
 /***
  * PlayerManager responsible for global quality, configuration, and creating AudioTracks for players
@@ -58,6 +62,10 @@ public class MusicManager {
         getSession(guild).setChannelId(channel.getLongID());
     }
 
+    public IChannel getSessionChannel(IGuild guild) {
+        return guild.getChannelByID(getSession(guild).getChannelId());
+    }
+
     TrackScheduler getScheduler() {
         return scheduler;
     }
@@ -92,6 +100,10 @@ public class MusicManager {
         return getSession(guild).getAudioDevice().getAudioPlayer().getVolume();
     }
 
+    public List<AudioTrack> getQueue(final IGuild guild) {
+        return scheduler.getQueue(guild.getLongID());
+    }
+
     public void clearQueue(IGuild guild) {
         scheduler.clearQueue(guild.getLongID());
     }
@@ -100,18 +112,11 @@ public class MusicManager {
         getSession(guild).getAudioDevice().getAudioPlayer().stopTrack();
     }
 
-    /*
-    scheduler:
-    play / dequeue
-    pause
-    stop
-    skip
-    back
-    fast forward
-    rewind
-    queue
-    delete
+    public AudioTrack nowPlaying(final IGuild guild) {
+        return getSession(guild).getAudioDevice().getAudioPlayer().getPlayingTrack();
+    }
 
+    /*
     create player/provider
     pruning
      */
