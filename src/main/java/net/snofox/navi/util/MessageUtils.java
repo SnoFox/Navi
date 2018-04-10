@@ -70,6 +70,12 @@ public class MessageUtils {
         return sb.toString();
     }
 
+    /***
+     * Truncates string to specified length, adding ellipsis + space if we truncate
+     * @param string the string we are truncating
+     * @param length the length to truncate to
+     * @return the truncated string
+     */
     public static String tldr(final String string, final int length) {
         if(string.length() > length)
             return string.substring(0, length-4) + "... ";

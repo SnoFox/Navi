@@ -74,12 +74,12 @@ public class MusicManager {
         return getSession(guild).getAudioDevice().getAudioPlayer();
     }
 
-    void loadSong(final IGuild guild, final String target, final IChannel notify) {
-        playerManager.loadItem(target, new AudioLoadResultHandlerImpl(guild, notify));
+    void loadSong(final IGuild guild, final String target, final IChannel notify, final boolean queueFirst) {
+        playerManager.loadItem(target, new AudioLoadResultHandlerImpl(guild, notify, queueFirst));
     }
 
-    void queueSong(final IGuild guild, final AudioTrack track) {
-        scheduler.queue(guild.getLongID(), track);
+    void queueSong(final IGuild guild, final AudioTrack track, final boolean first) {
+        scheduler.queue(guild.getLongID(), track, first);
     }
 
     boolean play(final IGuild guild) {
@@ -101,7 +101,7 @@ public class MusicManager {
     }
 
     public List<AudioTrack> getQueue(final IGuild guild) {
-        return scheduler.getQueue(guild.getLongID());
+        return ImmutableList.copyOf(scheduler.getQueue(guild.getLongID()));
     }
 
     public void clearQueue(IGuild guild) {
@@ -114,6 +114,10 @@ public class MusicManager {
 
     public AudioTrack nowPlaying(final IGuild guild) {
         return getSession(guild).getAudioDevice().getAudioPlayer().getPlayingTrack();
+    }
+
+    public void shuffleQueue(final IGuild guild) {
+        scheduler.shuffleQueue(guild.getLongID());
     }
 
     /*

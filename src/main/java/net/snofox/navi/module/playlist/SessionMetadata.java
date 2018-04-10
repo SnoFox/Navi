@@ -4,4 +4,5 @@ public class SessionMetadata {
     public Long sessionId;
     public Long requesterId;
     public Long notifyChanId;
+    public boolean addFirst;
 }

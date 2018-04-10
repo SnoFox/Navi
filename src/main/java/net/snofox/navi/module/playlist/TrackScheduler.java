@@ -6,13 +6,11 @@ import com.sedmelluq.discord.lavaplayer.tools.FriendlyException;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrackEndReason;
 import net.snofox.navi.Navi;
+import net.snofox.navi.util.RandUtils;
 import org.slf4j.Logger;
 import sx.blah.discord.Discord4J;
 
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.Map;
-import java.util.NoSuchElementException;
+import java.util.*;
 
 class TrackScheduler extends AudioEventAdapter {
     final private Map<Long, LinkedList<AudioTrack>> queues;
@@ -43,13 +41,10 @@ class TrackScheduler extends AudioEventAdapter {
         return queues.get(queueId);
     }
 
-    void queue(final long queueId, final AudioTrack track) {
-        System.out.println("Queuing up " + track.getInfo().title + " for " + queueId);
-        getQueue(queueId).addLast(track);
-    }
-
-    void queueFirst(final long queueId, final AudioTrack track) {
-        getQueue(queueId).addFirst(track);
+    void queue(final long queueId, final AudioTrack track, final boolean queueFirst) {
+        logger.info("Queuing up {} for {}", track.getInfo().title, queueId);
+        if(queueFirst) getQueue(queueId).addFirst(track);
+        else getQueue(queueId).addLast(track);
     }
 
     AudioTrack dequeue(final long queueId) {
@@ -63,7 +58,7 @@ class TrackScheduler extends AudioEventAdapter {
     }
 
     void shuffleQueue(final long queueId) {
-        // TODO: write LinkedList shuffle code
+        Collections.shuffle(getQueue(queueId), RandUtils.getRandom());
     }
 
 

@@ -13,10 +13,12 @@ import sx.blah.discord.handle.obj.IGuild;
 public class AudioLoadResultHandlerImpl implements AudioLoadResultHandler {
     final private Long guildId;
     final private Long channelId;
+    final private boolean queueFirst;
 
-    AudioLoadResultHandlerImpl(final IGuild guild, final IChannel channel) {
+    AudioLoadResultHandlerImpl(final IGuild guild, final IChannel channel, boolean queueFirst) {
         guildId = guild.getLongID();
         channelId = channel.getLongID();
+        this.queueFirst = queueFirst;
     }
 
     void turnOffTyping() {
@@ -37,7 +39,7 @@ public class AudioLoadResultHandlerImpl implements AudioLoadResultHandler {
         meta.notifyChanId = getChannel().getLongID();
         meta.sessionId = getGuild().getLongID();
         audioTrack.setUserData(meta);
-        MusicManager.getInstance().queueSong(getGuild(), audioTrack);
+        MusicManager.getInstance().queueSong(getGuild(), audioTrack, queueFirst);
         AudioTrackInfo info = audioTrack.getInfo();
         getChannel().sendMessage(String.format("Queued up %s (%s)", info.title, NumberUtils.millisToTimestamp(info.length)));
         turnOffTyping();
@@ -50,7 +52,7 @@ public class AudioLoadResultHandlerImpl implements AudioLoadResultHandler {
         meta.sessionId = getGuild().getLongID();
         audioPlaylist.getTracks().forEach((track) -> {
             track.setUserData(meta);
-            MusicManager.getInstance().queueSong(getGuild(), track);
+            MusicManager.getInstance().queueSong(getGuild(), track, false);
         });
         getChannel().sendMessage("Queued up " + audioPlaylist.getTracks().size() + " tracks");
         turnOffTyping();

@@ -29,12 +29,14 @@ public class Playlist implements IListener {
 
     private void registerCommands() {
         CommandHandler.registerCommand("queue", new QueueCommand(this));
+        CommandHandler.registerCommand("queuenext", new QueueNextCommand(this));
         CommandHandler.registerCommand("play", new PlayCommand(this));
         CommandHandler.registerCommand("debugmusic", new MusicDebug());
         CommandHandler.registerCommand("volume", new VolumeCommand(this));
         CommandHandler.registerCommand("skip", new SkipCommand(this));
         CommandHandler.registerCommand("clearqueue", new ClearQueueCommand(this));
         CommandHandler.registerCommand("np", new NowPlayingCommand(this));
+        CommandHandler.registerCommand("shufflequeue", new ShuffleCommand(this));
     }
 
     @Override
@@ -42,8 +44,8 @@ public class Playlist implements IListener {
 
     }
 
-    public void queueSong(final IGuild guild, final String target, final IChannel notify) {
-        musicManager.loadSong(guild, target, notify);
+    public void queueSong(final IGuild guild, final String target, final IChannel notify, final boolean queueFirst) {
+        musicManager.loadSong(guild, target, notify, queueFirst);
     }
 
     public void play(final IVoiceChannel channel) {
@@ -79,47 +81,65 @@ public class Playlist implements IListener {
         return musicManager.nowPlaying(guild);
     }
 
+
+    // TODO: Break these out into objects that just render the string instead of doing all the parsing here
     public void notifyNowPlaying(final IGuild guild, IChannel source_chat, final IUser source_user) {
         if(source_chat == null) source_chat = getSessionChannel(guild);
         EmbedBuilder builder = new EmbedBuilder();
-        StringBuilder sb = new StringBuilder();
+        // Footer
         if(source_user != null) builder.withFooterText(source_user.getDisplayName(guild));
-        final AudioTrack track = getNowPlaying(guild);
-        if(track == null) {
-            builder.appendField("Stopped", "Nothing is playing right now", false);
-            source_chat.sendMessage(builder.build());
-            return;
-        }
-        final AudioTrackInfo info = track.getInfo();
-        builder.appendField("Now Playing", MessageUtils.tldr(info.title, 40), true);
-        sb.append(MessageUtils.progressBar(track.getPosition(), track.getDuration()));
-        sb.append("\n(");
-        sb.append(NumberUtils.millisToTimestamp(track.getPosition()));
-        sb.append('/');
-        sb.append(NumberUtils.millisToTimestamp(track.getDuration()));
-        sb.append(')');
-        builder.appendField("Progress", sb.toString(), true);
-        sb = new StringBuilder();
-        final List<AudioTrack> queue = getQueue(guild);
-        if(queue.size() > 0) {
-            int x = 0;
-            for(final AudioTrack nextTrack : queue) {
-                sb.append('#');
-                sb.append(++x);
-                sb.append(": ");
-                sb.append(nextTrack.getInfo().title);
-                sb.append(" (");
-                sb.append(NumberUtils.millisToTimestamp(nextTrack.getDuration()));
-                sb.append(")\n");
-                if(x >= 5)
-                    break;
+        {
+            // Now Playing / Progress bar
+            final AudioTrack track = getNowPlaying(guild);
+            if (track == null) {
+                builder.appendField("Stopped", "Nothing is playing right now", false);
+            } else {
+                final StringBuilder sb = new StringBuilder();
+                final AudioTrackInfo info = track.getInfo();
+                String nowPlaying = MessageUtils.tldr(info.title, 40) + "\n";
+                nowPlaying += "[Listen on the web](" + info.uri + ")";
+                builder.appendField("Now Playing", nowPlaying, true);
+                sb.append(MessageUtils.progressBar(track.getPosition(), track.getDuration()));
+                sb.append("\n(");
+                sb.append(NumberUtils.millisToTimestamp(track.getPosition()));
+                sb.append('/');
+                sb.append(NumberUtils.millisToTimestamp(track.getDuration()));
+                sb.append(')');
+                builder.appendField("Progress", sb.toString(), true);
             }
-            builder.appendField("On Deck", sb.toString(), false);
+        }
+        {
+            // On Deck
+            final List<AudioTrack> queue = getQueue(guild);
+            if(queue.size() > 0) {
+                final StringBuilder sb = new StringBuilder();
+                int x = 0;
+                for (final AudioTrack nextTrack : queue) {
+                    if (x > 5) {
+                        sb.append("... and ");
+                        sb.append(queue.size() - 5);
+                        sb.append(" more tracks");
+                        break;
+                    }
+                    sb.append('#');
+                    sb.append(++x);
+                    sb.append(": ");
+                    sb.append(nextTrack.getInfo().title);
+                    sb.append(" (");
+                    sb.append(NumberUtils.millisToTimestamp(nextTrack.getDuration()));
+                    sb.append(")\n");
+                }
+                builder.appendField("On Deck", sb.toString(), false);
+            }
         }
         source_chat.sendMessage(builder.build());
     }
 
     public List<AudioTrack> getQueue(final IGuild guild) {
         return musicManager.getQueue(guild);
+    }
+
+    public void shuffleQueue(final IGuild guild) {
+         musicManager.shuffleQueue(guild);
     }
 }
