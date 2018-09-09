@@ -29,14 +29,22 @@ public class Playlist implements IListener {
 
     private void registerCommands() {
         CommandHandler.registerCommand("queue", new QueueCommand(this));
+        CommandHandler.aliasCommand("q", "queue");
         CommandHandler.registerCommand("queuenext", new QueueNextCommand(this));
         CommandHandler.registerCommand("play", new PlayCommand(this));
+        CommandHandler.aliasCommand("p", "play");
         CommandHandler.registerCommand("debugmusic", new MusicDebug());
         CommandHandler.registerCommand("volume", new VolumeCommand(this));
+        CommandHandler.aliasCommand("v", "volume");
         CommandHandler.registerCommand("skip", new SkipCommand(this));
+        CommandHandler.aliasCommand("s", "skip");
         CommandHandler.registerCommand("clearqueue", new ClearQueueCommand(this));
+        CommandHandler.aliasCommand("clearq", "clearqueue");
+        CommandHandler.aliasCommand("clear", "clearqueue");
         CommandHandler.registerCommand("np", new NowPlayingCommand(this));
+        CommandHandler.aliasCommand("nowplaying", "np");
         CommandHandler.registerCommand("shufflequeue", new ShuffleCommand(this));
+        CommandHandler.aliasCommand("shuffleq", "shufflequeue");
     }
 
     @Override

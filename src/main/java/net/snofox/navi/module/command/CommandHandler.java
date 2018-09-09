@@ -31,6 +31,14 @@ public class CommandHandler implements IListener {
         return instance.commands.putIfAbsent(name, command) == null;
     }
 
+    public static boolean aliasCommand(final String alias, final String commandName) {
+        if(instance == null) return false;
+        ICommand command = instance.commands.get(commandName);
+        if(command == null) return false;
+        instance.logger.debug("Aliased command {} to {}", alias, command.getClass().getName());
+        return instance.commands.putIfAbsent(alias, command) == null;
+    }
+
     @Override
     public void handle(final Event event) {
         if(event instanceof MessageReceivedEvent) {
